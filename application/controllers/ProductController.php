@@ -170,9 +170,9 @@ class ProductController extends CI_Controller {
             $data = array();
             $data['email'] = $email;
             $data['subject'] = $subject;
-            $data['message'] = $message;
+            $data['message'] = $message;    
             // $config = array();
-            $config = Array(
+            $config = array(
                 'protocol' => 'smtp',
                 'smtp_host' => 'smtp.mailtrap.io',
                 'smtp_port' => 2525,
@@ -181,21 +181,21 @@ class ProductController extends CI_Controller {
                 'crlf' => "\r\n",
                 'newline' => "\r\n"
             );
-            $config['protocol'] = 'smtp';
-            $config['smtp_host'] = 'smtp.mailtrap.io';
-            $config['smtp_user'] = '6eb304dfb3b33d';
-            $config['smtp_pass'] = '72c2859a95d955';
-            $config['smtp_port'] = 2525;
+            // $config['protocol'] = 'smtp';
+            // $config['smtp_host'] = 'smtp.mailtrap.io';
+            // $config['smtp_user'] = 'phpmailer.1902@gmail.com';
+            // $config['smtp_pass'] = 'Ritik@1234';
+            // $config['smtp_port'] = 2525;
             $this->email->initialize($config);
             // die(dd($data));
             $this->email->from('phpmailer.1902@gmail.com','Ritik@1234');
             $this->email->to($email);
             $this->email->subject('Send Email Codeigniter');
-            $this->email->message('The email send using codeigniter library');
+            $this->email->message('The email senT using codeigniter library');
             if($this->email->send()) {
                 $this->session->set_flashdata("email_sent","Congragulation Email Send Successfully.");
                 // $this->load->view('mailerview');
-                die(dd("if"));
+                redirect(base_url('mailer'));
             } else { 
                 $this->session->set_flashdata("email_sent","You have encountered an error");
                 // $this->load->view('mailerView');
