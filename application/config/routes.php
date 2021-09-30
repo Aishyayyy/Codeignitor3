@@ -67,3 +67,4 @@ $route['dataTable'] = 'ProductController/dataTable';
 $route['galleryView'] = 'ProductController/GalleryView';
 $route['mailer'] = 'ProductController/Mailer';
 $route['mainProdCont'] = 'ProductController/mainProdCont';
+$route['delete']='ProductController/delete';

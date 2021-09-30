@@ -45,4 +45,5 @@ class UserModel  extends CI_Model
 		$this->db->insert('multi_img',$data1);
 	} 
 	
+	
 }

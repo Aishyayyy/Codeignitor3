@@ -8,7 +8,7 @@ class ProductController extends CI_Controller {
     {
         $active['active'] = 'active';
         if (count($this->input->post())>0) {
-            $this->form_validation->set_rules('pname', 'Product Name', 'required|is_unique[prod_details.pname]');
+            $this->form_validation->set_rules('pname', 'Product Name', 'required');
             $this->form_validation->set_rules('price', 'Price', 'required');
             $this->form_validation->set_rules('prod_desc', 'Prodct Desc', 'required');
             if ($this->form_validation->run() == FALSE) {
@@ -55,11 +55,11 @@ class ProductController extends CI_Controller {
                     $_FILES['file']['size']     = $_FILES['files']['size'][$i]; 
 
 
-                    // $uploadPath = './uploads/'; 
-                    // $config['upload_path'] = $uploadPath; 
-                    // $config['allowed_types'] = 'jpg|jpeg|png|gif'; 
-                    // $this->load->library('upload', $config); 
-                    // $this->upload->initialize($config); 
+                    $uploadPath = './uploads/'; 
+                    $config['upload_path'] = $uploadPath; 
+                    $config['allowed_types'] = 'jpg|jpeg|png|gif'; 
+                    $this->load->library('upload', $config); 
+                    $this->upload->initialize($config); 
 
                     if($this->upload->do_upload('file')) { 
                         $fileData = $this->upload->data(); 
@@ -87,16 +87,19 @@ class ProductController extends CI_Controller {
     public function GalleryView()
     {
         $user_id = $this->session->userdata('user_id');
-        $main_data = $this->UserModel->getProdsMultiImg($user_id);
+        $total_records = $this->UserModel->getProdsMultiImg($user_id);
+      
         $data = array();
-        $data['main_data'] = $main_data;
+        $data['main_data'] = $total_records;
         $config['base_url'] = 'galleryView';
-        // die(dd(count($main_data)));
-        $config['total_rows'] = count($main_data);
-        // die(dd($config['total_rows'));
-        $config['per_page'] = 1;
+        $config['total_rows'] = count($total_records);
+        $config['per_page'] = 2;
+        $result_per_page =2;
         $this->pagination->initialize($config);
         $q =$this->pagination->create_links();
+
+        $total_pages = ceil(count($total_records)/$result_per_page);
+        // die(dd($total_pages));
         $this->load->view('galleryView',$data);
     }
 // DATA TABLE
@@ -178,11 +181,11 @@ class ProductController extends CI_Controller {
                 'crlf' => "\r\n",
                 'newline' => "\r\n"
             );
-            // $config['protocol'] = 'smtp';
-            // $config['smtp_host'] = 'smtp.mailtrap.io';
-            // $config['smtp_user'] = '6eb304dfb3b33d';
-            // $config['smtp_pass'] = '72c2859a95d955';
-            // $config['smtp_port'] = 2525;
+            $config['protocol'] = 'smtp';
+            $config['smtp_host'] = 'smtp.mailtrap.io';
+            $config['smtp_user'] = '6eb304dfb3b33d';
+            $config['smtp_pass'] = '72c2859a95d955';
+            $config['smtp_port'] = 2525;
             $this->email->initialize($config);
             // die(dd($data));
             $this->email->from('phpmailer.1902@gmail.com','Ritik@1234');
@@ -210,7 +213,10 @@ class ProductController extends CI_Controller {
     public function mainProdCont()
     {
         $id = $this->input->get();
-        $prod_id = $id['id'];  
+        $prod_id = $id['id'];   
+         print_r("$prod_id");
+         
+         
         $q = $this->db->query("select * from prod_details where prod_id = '$prod_id'")->result_array();
         $q1 = $this->db->query("Select * from multi_img where multi_id='$prod_id'")->result_array();
         $data1['data1'] = $q1;
@@ -218,6 +224,17 @@ class ProductController extends CI_Controller {
         // die(dd($f['f']));
         $this->load->view('SingleProductView',$f);
     } 
+    public function delete()
+    {
+        $id= $this->input->get();
+        $prod_id = $id['id']; 
+        // dd($prod_id);
+          
+        if($this->db->query("Delete from prod_details where prod_id = '$prod_id'"))
+        {
+            redirect(base_url('galleryView'));
+        }
+    }
 
 }
 
